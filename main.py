@@ -1,8 +1,31 @@
 import uvicorn
-from fastapi import FastAPI, HTTPException
+from fastapi import FastAPI, HTTPException, Depends, status
 from fastapi.middleware.cors import CORSMiddleware
 from pydantic import BaseModel
-from typing import List
+from typing import List#, Annotated
+# import models
+# from database import engine, SessionLocal
+# from sqlalchemy.orm import Session
+
+# app = FastAPI()
+# models.Base.metadata.create_all(bind=engine)
+
+# class PostBase(BaseModel):
+#   title: str
+#   content: str
+#   user_id:int
+
+# class UserBase(BaseModel):
+#   username: str
+
+# def get_db():
+#   db = SessionLocal()
+#   try:
+#     yield db
+#   finally:
+#     db.close()
+
+# db_dependency = Annotated(Session, Depends(get_db))
 
 class Fruit(BaseModel):
     name: str
