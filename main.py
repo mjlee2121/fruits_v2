@@ -1,34 +1,13 @@
 import uvicorn
-from fastapi import FastAPI, HTTPException, Depends, status
+from fastapi import FastAPI, HTTPException, Depends, status #, StaticFiles
 from fastapi.middleware.cors import CORSMiddleware
 from pydantic import BaseModel
 from typing import List#, Annotated
-# import models
-# from database import engine, SessionLocal
-# from sqlalchemy.orm import Session
-
-# app = FastAPI()
-# models.Base.metadata.create_all(bind=engine)
-
-# class PostBase(BaseModel):
-#   title: str
-#   content: str
-#   user_id:int
-
-# class UserBase(BaseModel):
-#   username: str
-
-# def get_db():
-#   db = SessionLocal()
-#   try:
-#     yield db
-#   finally:
-#     db.close()
-
-# db_dependency = Annotated(Session, Depends(get_db))
+from fastapi.staticfiles import StaticFiles
 
 class Fruit(BaseModel):
     name: str
+    photo_path: str
 
 
 class Fruits(BaseModel):
@@ -42,6 +21,9 @@ origins = [
     "http://127.0.0.1:3000"
     # Add more origins here
 ]
+
+# Serve static files for fruit photos
+app.mount("/images", StaticFiles(directory="images"), name="images")
 
 app.add_middleware(
     CORSMiddleware,
@@ -61,15 +43,9 @@ def get_fruits():
 
 @app.post("/")
 def add_fruit(fruit: Fruit):
+    fruit.photo_path=f"/images/{fruit.name.lower()}.jpeg"
     memory_db["fruits"].append(fruit)
     return fruit
-
-# @app.delete("/")
-# def delete_fruit(fruit: Fruit):
-#     print('delete called')
-#     if fruit in memory_db["fruits"]:
-#         print('fruit exists')
-#         memory_db["fruits"].remove(fruit)
 
 @app.delete("/")
 def delete_fruit(fruit: Fruit):
